@@ -31,6 +31,20 @@
             cursor: grab;
             position: absolute;
         }
+        .active {
+            background: lightgreen; /* Aktive komponenter blir grønne */
+        }
+        #simulateBtn {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -41,14 +55,16 @@
     <div class="component" draggable="true" data-type="valve">5/2 Valve</div>
     <div class="component" draggable="true" data-type="air">Air Supply</div>
     <div class="component" draggable="true" data-type="button">Button</div>
-    <div class="component" draggable="true" data-type="actuator">Actuator</div>
 </div>
 
-<div id="workspace"></div>
+<div id="workspace">
+    <button id="simulateBtn">Start Simulation</button>
+</div>
 
 <script>
     const components = document.querySelectorAll('.component');
     const workspace = document.getElementById('workspace');
+    const simulateBtn = document.getElementById('simulateBtn');
 
     components.forEach(component => {
         component.addEventListener('dragstart', (e) => {
@@ -69,14 +85,28 @@
         newComponent.innerText = type;
         newComponent.style.left = `${e.clientX - workspace.offsetLeft - 40}px`;
         newComponent.style.top = `${e.clientY - workspace.offsetTop - 40}px`;
-
-        newComponent.onclick = () => {
-            alert(`AI Help: This is a ${type}. Click on the lightbulb for more information.`);
-        };
+        newComponent.dataset.type = type;
 
         workspace.appendChild(newComponent);
+    });
+
+    // Simulering av luftstrøm
+    simulateBtn.addEventListener('click', () => {
+        const componentsInWorkspace = document.querySelectorAll('#workspace .component');
+        
+        componentsInWorkspace.forEach(comp => {
+            if (comp.dataset.type === "air" || comp.dataset.type === "valve") {
+                comp.classList.add("active");
+                setTimeout(() => {
+                    comp.classList.remove("active");
+                }, 2000);
+            }
+        });
+
+        alert("Simulation running: Air is flowing through the system!");
     });
 </script>
 
 </body>
 </html>
+
