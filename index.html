@@ -21,8 +21,8 @@
             position: relative;
         }
         .component {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: lightblue;
             border: 2px solid #007bff;
             display: flex;
@@ -31,8 +31,15 @@
             cursor: grab;
             position: absolute;
         }
+        .airflow {
+            width: 10px;
+            height: 50px;
+            background: blue;
+            position: absolute;
+            display: none;
+        }
         .active {
-            background: lightgreen; /* Aktive komponenter blir grønne */
+            background: lightgreen;
         }
         #simulateBtn {
             position: absolute;
@@ -51,9 +58,9 @@
 
 <div id="toolbar">
     <h3>Pneumatic Components</h3>
-    <div class="component" draggable="true" data-type="cylinder">Cylinder</div>
-    <div class="component" draggable="true" data-type="valve">5/2 Valve</div>
     <div class="component" draggable="true" data-type="air">Air Supply</div>
+    <div class="component" draggable="true" data-type="valve">5/2 Valve</div>
+    <div class="component" draggable="true" data-type="cylinder">Cylinder</div>
     <div class="component" draggable="true" data-type="button">Button</div>
 </div>
 
@@ -65,6 +72,7 @@
     const components = document.querySelectorAll('.component');
     const workspace = document.getElementById('workspace');
     const simulateBtn = document.getElementById('simulateBtn');
+    let connections = [];
 
     components.forEach(component => {
         component.addEventListener('dragstart', (e) => {
@@ -90,23 +98,23 @@
         workspace.appendChild(newComponent);
     });
 
-    // Simulering av luftstrøm
+    // Simuler luftstrøm
     simulateBtn.addEventListener('click', () => {
-        const componentsInWorkspace = document.querySelectorAll('#workspace .component');
-        
-        componentsInWorkspace.forEach(comp => {
-            if (comp.dataset.type === "air" || comp.dataset.type === "valve") {
-                comp.classList.add("active");
-                setTimeout(() => {
-                    comp.classList.remove("active");
-                }, 2000);
-            }
-        });
+        const airSupply = document.querySelector('[data-type="air"]');
+        const valve = document.querySelector('[data-type="valve"]');
+        const cylinder = document.querySelector('[data-type="cylinder"]');
 
-        alert("Simulation running: Air is flowing through the system!");
+        if (airSupply && valve && cylinder) {
+            valve.classList.add("active");
+            setTimeout(() => {
+                cylinder.classList.add("active");
+                alert("Simulation Complete: The cylinder is activated!");
+            }, 2000);
+        } else {
+            alert("Error: Make sure all components are placed correctly!");
+        }
     });
 </script>
 
 </body>
 </html>
-
